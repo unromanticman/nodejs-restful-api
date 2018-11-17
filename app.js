@@ -20,3 +20,16 @@ server = Http.createServer(function (request, response) {
 server.listen(3000, function () {
   console.log('Listening on port 3000');
 });
+
+var counter = 0,
+  todoList = {};
+
+function createItem(request, response) {
+  var id = counter += 1;
+  console.log('Create item', id);
+  response.writeHead(201, {
+    'Content-Type': 'text/plain'
+  });
+  response.end('Item ' + id);
+}
+router.post('/todo', createItem);
