@@ -108,6 +108,29 @@ function readList(request, response) {
   });
   response.end(listString);
 }
+
+function updateItem(request, response) {
+  var id = request.params.id,
+    item = request.body;
+
+  if (typeof todoList[id] !== 'string') {
+    console.log('Item not found', id);
+    response.writeHead(404);
+    response.end('\n');
+    return;
+  }
+
+  console.log('Update item', id, item);
+
+  todoList[id] = item;
+  response.writeHead(201, {
+    'Content-Type': 'text/plain',
+    'Location': '/todo/' + id
+  });
+  response.end(item);
+}
+router.put('/todo/:id', updateItem);
+
 router.get('/todo', readList);
 
 router.delete('/todo/:id', deleteItem);
