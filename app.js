@@ -1,140 +1,119 @@
-var Http = require('http'),
-  Router = require('router'),
-  server,
-  router;
-var BodyParser = require('body-parser');
+const Http = require('http'),
+  Router = require('router')
 
-router = new Router();
+const BodyParser = require('body-parser')
 
-server = Http.createServer(function (request, response) {
+const router = new Router()
+
+const server = Http.createServer(function (request, response) {
   router(request, response, function (error) {
     if (!error) {
-      response.writeHead(404);
+      response.writeHead(404)
     } else {
       // Handle errors
-      console.log(error.message, error.stack);
-      response.writeHead(400);
+      console.log(error.message, error.stack)
+      response.writeHead(400)
     }
-    response.end('RESTful API Server is running!');
-  });
-});
+    response.end('RESTful API Server is running!')
+  })
+})
 
 server.listen(3000, function () {
-  console.log('Listening on port 3000');
-});
-router.use(BodyParser.text());
+  console.log('Listening on port 3000')
+})
 
-var counter = 0,
-  todoList = {};
+router.use(BodyParser.text())
 
-function createItem(request, response) {
-  var id = counter += 1,
-    item = request.body;
+let counter = 0,
+  todoList = {}
 
-  console.log('Create item', id, item);
-  todoList[id] = item;
+const createItem = (request, response) => {
+  const id = counter += 1,
+    item = request.body
+  console.log('Create item', id, item)
+  todoList[id] = item
   response.writeHead(201, {
     'Content-Type': 'text/plain',
     'Location': '/todo/' + id
-  });
-  response.end(item);
+  })
+  response.end(item)
 }
 
-function readItem(request, response) {
-  var id = request.params.id,
-    item = todoList[id];
-
+const readItem = (request, response) => {
+  const id = request.params.id,
+    item = todoList[id]
   if (typeof item !== 'string') {
-    console.log('Item not found', id);
-    response.writeHead(404);
-    response.end('\n');
-    return;
+    console.log('Item not found', id)
+    response.writeHead(404)
+    response.end('\n')
+    return
   }
-
-  console.log('Read item', id, item);
-
+  console.log('Read item', id, item)
   response.writeHead(200, {
     'Content-Type': 'text/plain'
-  });
-  response.end(item);
+  })
+  response.end(item)
 }
 
-function deleteItem(request, response) {
-  var id = request.params.id;
-
+const deleteItem = (request, response) => {
+  const id = request.params.id
   if (typeof todoList[id] !== 'string') {
-    console.log('Item not found', id);
-    response.writeHead(404);
-    response.end('\n');
-    return;
+    console.log('Item not found', id)
+    response.writeHead(404)
+    response.end('\n')
+    return
   }
-
-  console.log('Delete item', id);
-
-  todoList[id] = undefined;
+  console.log('Delete item', id)
+  todoList[id] = undefined
   response.writeHead(204, {
     'Content-Type': 'text/plain'
-  });
-  response.end('');
+  })
+  response.end('')
 }
-function readList(request, response) {
-  var item,
-    itemList = [],
-    listString;
+const readList = (request, response) => {
+  const itemList = []
+  let item, listString
 
   for (id in todoList) {
     if (!todoList.hasOwnProperty(id)) {
-      continue;
+      continue
     }
-    item = todoList[id];
-
+    item = todoList[id]
     if (typeof item !== 'string') {
-      continue;
+      continue
     }
-
-    itemList.push(item);
+    itemList.push(item)
   }
-
   console.log('Read List: \n', JSON.stringify(
     itemList,
     null,
     '  '
-  ));
-
-  listString = itemList.join('\n');
-
+  ))
+  listString = itemList.join('\n')
   response.writeHead(200, {
     'Content-Type': 'tet/plain'
-  });
-  response.end(listString);
+  })
+  response.end(listString)
 }
-
-function updateItem(request, response) {
-  var id = request.params.id,
-    item = request.body;
-
+const updateItem = (request, response) => {
+  const id = request.params.id, item = request.body
   if (typeof todoList[id] !== 'string') {
-    console.log('Item not found', id);
-    response.writeHead(404);
-    response.end('\n');
-    return;
+    console.log('Item not found', id)
+    response.writeHead(404)
+    response.end('\n')
+    return
   }
-
-  console.log('Update item', id, item);
-
-  todoList[id] = item;
+  console.log('Update item', id, item)
+  todoList[id] = item
   response.writeHead(201, {
     'Content-Type': 'text/plain',
     'Location': '/todo/' + id
-  });
-  response.end(item);
+  })
+  response.end(item)
 }
-router.put('/todo/:id', updateItem);
 
-router.get('/todo', readList);
-
-router.delete('/todo/:id', deleteItem);
-
-router.get('/todo/:id', readItem);
-
-router.post('/todo', createItem);
+router.get('/todo', readList)
+router.get('/todo/:id', readItem)
+router.post('/todo', createItem)
+router.put('/todo/:id', updateItem)
+router.delete('/todo/:id', deleteItem)
