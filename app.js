@@ -2,6 +2,8 @@ var Http = require('http'),
   Router = require('router'),
   server,
   router;
+var BodyParser = require('body-parser');
+
 router = new Router();
 
 server = Http.createServer(function (request, response) {
@@ -20,16 +22,22 @@ server = Http.createServer(function (request, response) {
 server.listen(3000, function () {
   console.log('Listening on port 3000');
 });
+router.use(BodyParser.text());
 
 var counter = 0,
   todoList = {};
-
+  
 function createItem(request, response) {
-  var id = counter += 1;
-  console.log('Create item', id);
+  var id = counter += 1,
+    item = request.body;
+
+  console.log('Create item', id, item);
+  todoList[id] = item;
   response.writeHead(201, {
-    'Content-Type': 'text/plain'
+    'Content-Type': 'text/plain',
+    'Location': '/todo/' + id
   });
-  response.end('Item ' + id);
+  response.end(item);
 }
+
 router.post('/todo', createItem);
