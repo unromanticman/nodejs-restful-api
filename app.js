@@ -58,6 +58,27 @@ function readItem(request, response) {
   });
   response.end(item);
 }
+
+function deleteItem(request, response) {
+  var id = request.params.id;
+
+  if (typeof todoList[id] !== 'string') {
+    console.log('Item not found', id);
+    response.writeHead(404);
+    response.end('\n');
+    return;
+  }
+
+  console.log('Delete item', id);
+
+  todoList[id] = undefined;
+  response.writeHead(204, {
+    'Content-Type': 'text/plain'
+  });
+  response.end('');
+}
+router.delete('/todo/:id', deleteItem);
+
 router.get('/todo/:id', readItem);
 
 router.post('/todo', createItem);
