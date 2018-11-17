@@ -77,6 +77,39 @@ function deleteItem(request, response) {
   });
   response.end('');
 }
+function readList(request, response) {
+  var item,
+    itemList = [],
+    listString;
+
+  for (id in todoList) {
+    if (!todoList.hasOwnProperty(id)) {
+      continue;
+    }
+    item = todoList[id];
+
+    if (typeof item !== 'string') {
+      continue;
+    }
+
+    itemList.push(item);
+  }
+
+  console.log('Read List: \n', JSON.stringify(
+    itemList,
+    null,
+    '  '
+  ));
+
+  listString = itemList.join('\n');
+
+  response.writeHead(200, {
+    'Content-Type': 'tet/plain'
+  });
+  response.end(listString);
+}
+router.get('/todo', readList);
+
 router.delete('/todo/:id', deleteItem);
 
 router.get('/todo/:id', readItem);
