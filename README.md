@@ -1,5 +1,11 @@
 # nodejs-restful-api
 利用 nodejs 建置簡易的 RESTful API。
+### Install
+```
+npm install
+nodemon app.js
+```
+### Usage
 ```
 建立一個待辦事項
 操作方式：POST
